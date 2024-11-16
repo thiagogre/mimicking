@@ -28,7 +28,7 @@ The core feature is a pronunciation comparison between your speech and the refer
 
 ### Environment Setup
 
-The app is developed with Python 3.11.2 on Debian GNU/Linux 12 (Bookworm). If you're using a different OS, a Dockerfile is provided to help you run the app in an Debian-based container. Simply clone the repository and build/run the Docker image with a volume for your project.
+The app was developed using Python 3.11.2 on Debian GNU/Linux 12 (Bookworm). If you're using a different operating system, you might need to make some adjustments to suit your environment.
 
 Clone this repo and you'll can set up the app locally by following these commands:
 
