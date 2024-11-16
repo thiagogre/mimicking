@@ -1,0 +1,11 @@
+venv
+__pycache__
+
+nltk_data
+clips
+audios
+
+*.txt
+*.db
+
+_*.wav
