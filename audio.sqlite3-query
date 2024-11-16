@@ -1,0 +1,110 @@
+-- database: ./audio.db
+SELECT
+    *
+FROM
+    logs;
+
+SELECT
+    COUNT(*) AS total_rows
+FROM
+    logs;
+
+-- add new column
+ALTER TABLE logs
+ADD COLUMN audio_folder TYPE TEXT;
+
+-- set a specific value for all existing rows
+UPDATE logs
+SET
+    audio_folder = 'youtube/1';
+
+-- remove column
+ALTER TABLE logs
+DROP COLUMN audio_folder;
+
+-- sorted from most to least frequent
+SELECT
+    native,
+    COUNT(*) AS frequency
+FROM
+    logs
+GROUP BY
+    phrase_index
+ORDER BY
+    frequency DESC,
+    phrase_index;
+
+-- sorted from most to least frequent
+-- filter by last occurrence of phrase_index
+SELECT
+    t1.native,
+    (
+        SELECT
+            COUNT(*)
+        FROM
+            logs AS t
+        WHERE
+            t.phrase_index = t1.phrase_index
+    ) AS frequency
+FROM
+    logs AS t1
+WHERE
+    t1.ROWID = (
+        SELECT
+            MAX(t2.ROWID)
+        FROM
+            logs AS t2
+        WHERE
+            t2.phrase_index = t1.phrase_index
+    )
+ORDER BY
+    frequency DESC,
+    t1.phrase_index;
+
+-- sorted from better to worse similarity
+SELECT
+    native,
+    student,
+    similarity
+FROM
+    logs
+ORDER BY
+    similarity DESC;
+
+-- worse pronunciations
+SELECT
+    native,
+    phrase_index
+FROM
+    logs
+WHERE
+    similarity > 60.0
+GROUP BY
+    phrase_index;
+
+-- overall rating
+SELECT
+    COUNT(
+        CASE
+            WHEN similarity <= 20.0 THEN 1
+        END
+    ) AS excellent,
+    COUNT(
+        CASE
+            WHEN similarity > 20.0
+            AND similarity <= 40.0 THEN 1
+        END
+    ) AS good,
+    COUNT(
+        CASE
+            WHEN similarity > 40.0
+            AND similarity <= 60.0 THEN 1
+        END
+    ) AS fair,
+    COUNT(
+        CASE
+            WHEN similarity > 60.0 THEN 1
+        END
+    ) AS poor
+FROM
+    logs;

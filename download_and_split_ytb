@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Install youtube-dl
+# sudo curl -L https://github.com/ytdl-org/ytdl-nightly/releases/download/2024.07.07/youtube-dl -o /usr/local/bin/youtube-dl
+# sudo chmod a+rx /usr/local/bin/youtube-dl
+
+if ! command -v youtube-dl &>/dev/null; then
+    echo "youtube-dl not found. Please install it first."
+    exit 1
+fi
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 <file_with_video_links>"
+    exit 1
+fi
+
+mkdir -p audios
+
+for url in $(cat "$1"); do
+    # Skip empty lines
+    [ -z "$url" ] && continue
+
+    echo "Downloading and converting to WAV for: $url"
+    youtube-dl -x \
+        --audio-format wav \
+        --user-agent "Mozilla/5.0 (Android 14; Mobile; rv:128.0) Gecko/128.0 Firefox/128.0" \
+        -o "audios/%(id)s.wav" "$url"
+
+    if [ $? -ne 0 ]; then
+        echo "Error downloading $url. Skipping to the next URL..."
+        continue
+    fi
+
+    echo "Successfully downloaded and converted $url as video ID: $(youtube-dl --get-id "$url")"
+
+    video_id=$(youtube-dl --get-id "$url")
+
+    ffmpeg -i "audios/${video_id}.wav" -f segment -segment_time 3 -c:a pcm_s16le "audios/${video_id}_%d.wav"
+
+    rm "audios/${video_id}.wav"
+done
+
+echo "All downloads completed."

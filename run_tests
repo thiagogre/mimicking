@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    echo "No option provided. Usage: $0 [all|unit]"
+    exit 1
+fi
+
+case $1 in
+all)
+    TEST_DIR="tests"
+    ;;
+unit)
+    TEST_DIR="tests/unit"
+    ;;
+*)
+    echo "Invalid option. Usage: $0 [all|unit]"
+    exit 1
+    ;;
+esac
+
+echo "Running tests from $TEST_DIR with pattern test_*.py"
+python -m unittest discover -s $TEST_DIR -p "test_*.py"
