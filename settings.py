@@ -3,7 +3,7 @@ import os
 ROOT_DIR = os.getcwd()
 
 AUDIO_FOLDER = "audios"
-PHRASES_FILE = "phrases.txt"
+PHRASES_FILE = "_phrases.txt"
 NATIVE_PRONOUNCE_FILE = "_native_pronounce.wav"
 STUDENT_PRONOUNCE_FILE = "_student_pronounce.wav"
 

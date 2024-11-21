@@ -4,8 +4,9 @@ __pycache__
 nltk_data
 clips
 audios
+texts
 
-*.txt
+_*.txt
 *.db
 
 _*.wav
