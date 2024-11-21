@@ -4,8 +4,11 @@ __pycache__
 nltk_data
 clips
 audios
+texts
 
 *.txt
 *.db
 
 _*.wav
+
+settings.json
