@@ -6,7 +6,7 @@ clips
 audios
 texts
 
-*.txt
+_*.txt
 *.db
 
 _*.wav
