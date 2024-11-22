@@ -113,6 +113,8 @@ def process_student_audio(
             native_audio_filename, STUDENT_PRONOUNCE_FILE
         )
         student_text = transcription_service.transcribe(STUDENT_PRONOUNCE_FILE)
+        if student_text.lower() == "next":
+            break
 
         phoneme_similarity = transcription_service.calculate_phoneme_similarity(
             native_text, student_text
