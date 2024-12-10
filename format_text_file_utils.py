@@ -39,7 +39,9 @@ def remove_empty_lines(file_path: str, output_path: str) -> None:
 
     # Filter out empty lines
     for line in lines:
-        if line.strip():  # Only keep non-empty lines
+        if (
+            line.strip() and len(line.split()) > 2
+        ):  # Only keep non-empty lines that contains more than two words
             cleaned_lines.append(line)
 
     with open(output_path, "w") as output_file:
