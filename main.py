@@ -80,7 +80,7 @@ class Processor:
         last_index = global_index + len(phrases)
 
         for _ in range(global_index, last_index):
-            _, phrase_index = phrase_service.get_indexes()
+            db_global_index, phrase_index = phrase_service.get_indexes()
             phrase = phrases[phrase_index]
             print(f"\n{COLOR_YELLOW}{phrase_index + 1}: {phrase}{COLOR_RESET}\n")
 
@@ -95,7 +95,7 @@ class Processor:
                 phrase_service,
                 transcription_service,
                 audio_service,
-                global_index,
+                db_global_index,
                 phrase=phrase,
             )
 
@@ -112,7 +112,7 @@ class Processor:
         last_index = global_index + len(audio_filenames)
 
         for _ in range(global_index, last_index):
-            _, file_index = phrase_service.get_indexes()
+            db_global_index, file_index = phrase_service.get_indexes()
             audio_filename = audio_filenames[file_index]
             print(
                 f"\n{COLOR_YELLOW}{file_index}: Processing {audio_filename}{COLOR_RESET}\n"
@@ -128,7 +128,7 @@ class Processor:
                 phrase_service,
                 transcription_service,
                 audio_service,
-                global_index,
+                db_global_index,
             )
 
             phrase_service.increment_indexes()
