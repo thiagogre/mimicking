@@ -6,6 +6,7 @@ from application.ports import (
     InsertParams,
     FindByIdParams,
     UpdateByIdParams,
+    FindByExpiredRepeatAtParams
 )
 
 
@@ -26,6 +27,8 @@ class DatabaseService:
                 ("student", "TEXT"),
                 ("phrase", "TEXT"),
                 ("phrase_index", "INTEGER"),
+                ("native_audio_filename", "TEXT"),
+                ("repeat_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
                 ("date", "TEXT DEFAULT CURRENT_TIMESTAMP"),
             ),
         )
@@ -75,3 +78,11 @@ class DatabaseService:
             ),
         )
         self.database_port.updateById(params)
+
+    def get_expired_repeat_at(self, table_name, target_date):
+        params = FindByExpiredRepeatAtParams(table_name, target_date)
+        return self.database_port.findByExpiredRepeatAt(params)
+    
+    def update_by_id(self, table_name, id, columns):
+        params = UpdateByIdParams(table_name, id, columns)
+        return self.database_port.updateById(params)

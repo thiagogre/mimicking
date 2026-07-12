@@ -55,10 +55,19 @@ class Processor:
                 student_text,
                 phrase,
                 global_index,
+                native_audio_filename,
+                "",
             )
             phrase_service.save(new_phrase)
 
             if phoneme_similarity <= EXPECTED_SIMILARITY_FACTOR:
+                print(
+                    f"{COLOR_BLUE}[student]{COLOR_RESET} {COLOR_GREEN}{student_text}{COLOR_RESET}"
+                )
+                print(
+                    f"{COLOR_BLUE}[native]{COLOR_RESET} {COLOR_GREEN}{native_text}{COLOR_RESET}"
+                )
+
                 self.__reset()
                 break
             else:
@@ -108,6 +117,29 @@ class Processor:
         audio_service: AudioService,
         transcription_service: TranscriptionService,
     ) -> None:
+        indexes_and_native_audio_filenames = phrase_service.get_expired_repeat_at()
+
+        print(
+            f"\n{COLOR_CYAN}Total for review: {len(indexes_and_native_audio_filenames)}{COLOR_RESET}\n"
+        )
+
+        for index_and_native_audio_filename in indexes_and_native_audio_filenames:
+            [id, index, native_audio_filename] = index_and_native_audio_filename
+            print(f"\n{COLOR_CYAN}Reviewing {native_audio_filename}{COLOR_RESET}\n")
+
+            native_text = transcription_service.transcribe(native_audio_filename)
+
+            self._process_student_audio(
+                native_text,
+                native_audio_filename,
+                phrase_service,
+                transcription_service,
+                audio_service,
+                index,
+            )
+
+            phrase_service.invalidate_repeat_at(id)
+
         global_index, file_index = phrase_service.get_indexes()
         last_index = global_index + len(audio_filenames)
 

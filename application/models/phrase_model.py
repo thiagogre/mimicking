@@ -8,3 +8,5 @@ class PhraseModel:
     student: str
     phrase: str
     phrase_index: int
+    native_audio_filename: str
+    repeat_at: str

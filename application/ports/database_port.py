@@ -32,6 +32,10 @@ class UpdateByIdParams:
     id: Id
     columns: Tuple[Tuple[str, str], ...]
 
+@dataclass
+class FindByExpiredRepeatAtParams:
+    table_name: str
+    target_date: str
 
 class AbstractDatabasePort(ABC):
     @abstractmethod
@@ -58,6 +62,10 @@ class AbstractDatabasePort(ABC):
     def findById(self, params: FindByIdParams):
         pass
 
-    # @abstractmethod
-    # def updateById(self, params: UpdateByIdParams):
-    #     pass
+    @abstractmethod
+    def findByExpiredRepeatAt(self, params: FindByExpiredRepeatAtParams):
+        pass
+
+    @abstractmethod
+    def updateById(self, params: UpdateByIdParams):
+        pass

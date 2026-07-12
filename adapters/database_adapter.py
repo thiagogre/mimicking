@@ -26,13 +26,11 @@ class DatabaseAdapter(AbstractDatabasePort):
                 [f"{col_name} {col_type}" for col_name, col_type in params.columns]
             )
 
-            self.cursor.execute(
-                f"""
+            self.cursor.execute(f"""
             CREATE TABLE IF NOT EXISTS {params.table_name} (
                 {column_definitions}
             )
-            """
-            )
+            """)
             self.connection.commit()
         except sqlite3.DatabaseError as e:
             raise RuntimeError(f"Failed to create table {params.table_name}: {e}")
@@ -73,6 +71,29 @@ class DatabaseAdapter(AbstractDatabasePort):
                 f"SELECT * FROM {params.table_name} WHERE id = {params.id}"
             )
             columns = self.cursor.fetchone()
+            return columns if columns else ()
+        except sqlite3.DatabaseError as e:
+            raise RuntimeError(f"Failed to find record in {params.table_name}: {e}")
+
+    def findByExpiredRepeatAt(self, params: FindByExpiredRepeatAtParams):
+        try:
+            self.cursor.execute(
+                f"""
+                SELECT l.*
+                FROM {params.table_name} l
+                INNER JOIN (
+                    SELECT
+                        phrase_index,
+                        MAX(id) AS last_id
+                    FROM {params.table_name}
+                    GROUP BY phrase_index
+                ) latest
+                    ON l.id = latest.last_id
+                WHERE l.repeat_at <= ?
+                """,
+                (params.target_date,),
+            )
+            columns = self.cursor.fetchall()
             return columns if columns else ()
         except sqlite3.DatabaseError as e:
             raise RuntimeError(f"Failed to find record in {params.table_name}: {e}")
